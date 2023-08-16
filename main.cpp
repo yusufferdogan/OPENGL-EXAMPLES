@@ -1,6 +1,6 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-
+#include <math.h>
 #include <iostream>
 
 void framebuffer_size_callback(GLFWwindow *window, int width, int height);
@@ -10,29 +10,29 @@ void processInput(GLFWwindow *window);
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
 /*
-To define how the vertex data is organized we specify the input variables 
+To define how the vertex data is organized we specify the input variables
 with location metadata so we can configure the vertex attributes on the CPU.
-We've seen this in the previous chapter as layout (location = 0). 
-The vertex shader thus requires an extra layout specification for 
+We've seen this in the previous chapter as layout (location = 0).
+The vertex shader thus requires an extra layout specification for
 its inputs so we can link it with the vertex data.
 */
-const char *vertexShaderSource = 
+const char *vertexShaderSource =
     "#version 330 core\n"
     "layout (location = 0) in vec3 aPos;\n" // the position variable has attribute position 0
-    "out vec4 vertexColor;\n" // specify a color output to the fragment shader
+    "out vec4 vertexColor;\n"               // specify a color output to the fragment shader
     "void main()\n"
     "{\n"
     "   gl_Position = vec4(aPos, 1.0);\n" // see how we directly give a vec3 to vec4's constructor
-    "   vertexColor = vec4(0.5, 0.0, 0.0, 1.0);" 
+    "   vertexColor = vec4(0.5, 0.0, 0.0, 1.0);"
     "}\0";
 
-const char *fragmentShaderSource = 
+const char *fragmentShaderSource =
     "#version 330 core\n"
     "out vec4 FragColor;\n"
-    "in vec4 vertexColor;\n"// the input variable from the vertex shader (same name and same type)  
+    "uniform vec4 ourColor;\n" // the input variable from the vertex shader (same name and same type)
     "void main()\n"
     "{\n"
-    "   FragColor = vertexColor;\n"
+    "   FragColor = ourColor;\n"
     "}\n\0";
 
 int main()
@@ -176,6 +176,13 @@ int main()
 
         // draw our first triangle
         glUseProgram(shaderProgram);
+
+        // update the uniform color
+        float timeValue = glfwGetTime();
+        float greenValue = sin(timeValue) / 2.0f + 0.5f;
+        int vertexColorLocation = glGetUniformLocation(shaderProgram, "ourColor");
+        glUniform4f(vertexColorLocation, 0.0f, greenValue, 0.0f, 1.0f);
+
         glBindVertexArray(VAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
         // glDrawArrays(GL_TRIANGLES, 0, 6);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
