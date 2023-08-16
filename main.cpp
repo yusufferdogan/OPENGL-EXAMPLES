@@ -25,13 +25,14 @@ const char *vertexShaderSource =
     "   gl_Position = vec4(aPos, 1.0);\n" // see how we directly give a vec3 to vec4's constructor
     "   vertexColor = vec4(0.5, 0.0, 0.0, 1.0);" 
     "}\0";
-    
+
 const char *fragmentShaderSource = 
     "#version 330 core\n"
     "out vec4 FragColor;\n"
+    "in vec4 vertexColor;\n"// the input variable from the vertex shader (same name and same type)  
     "void main()\n"
     "{\n"
-    "   FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
+    "   FragColor = vertexColor;\n"
     "}\n\0";
 
 int main()
